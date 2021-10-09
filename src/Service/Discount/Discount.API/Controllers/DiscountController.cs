@@ -32,7 +32,7 @@ namespace Discount.API.Controllers
         {
             await _repository.CreateDiscount(coupon);
 
-            return CreatedAtRoute("GetDiscount", new { productName = coupon.Name }, coupon);
+            return CreatedAtRoute("GetDiscount", new { productName = coupon.ProductName }, coupon);
         }
 
         [HttpPut]

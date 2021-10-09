@@ -26,7 +26,7 @@ namespace Discount.API.Repositories
                 "SELECT * FROM Coupon WHERE ProductName = @ProductName", new { ProductName = productName });
 
             if (coupon == null)
-                return new Coupon { Name = "No Discount", Amount = 0, Description = "No Discount Desc" };
+                return new Coupon { ProductName = "No Discount", Amount = 0, Description = "No Discount Desc" };
 
             return coupon;
         }
@@ -37,7 +37,7 @@ namespace Discount.API.Repositories
 
             var affected = await connection.ExecuteAsync
                 ("INSERT INTO Coupon (ProductName, Description, Amount) VALUES (@ProductName, @Description, @Amount)",
-                new { ProductName = coupon.Name, Description = coupon.Description, Amount = coupon.Amount });
+                new { ProductName = coupon.ProductName, Description = coupon.Description, Amount = coupon.Amount });
 
             if (affected == 0)
                 return false;
@@ -51,7 +51,7 @@ namespace Discount.API.Repositories
 
             var affected = await connection.ExecuteAsync
                 ("UPDATE Coupon SET ProductName = @ProductName, Description = @Description, Amount = @Amount WHERE Id = @Id",
-                new { ProductName = coupon.Name, Description = coupon.Description, Amount = coupon.Amount, Id = coupon.Id });
+                new { ProductName = coupon.ProductName, Description = coupon.Description, Amount = coupon.Amount, Id = coupon.Id });
 
             if (affected == 0)
                 return false;
