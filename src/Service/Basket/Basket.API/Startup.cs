@@ -24,13 +24,17 @@ namespace Basket.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Redis Configuration
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = Configuration.GetValue<string>("CacheSettings:ConnectionString");
             });
 
+            // General Configuration
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddAutoMapper(typeof(Startup));
 
+            // GRPC Configuration
             services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
                 o => o.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]));
 
@@ -39,9 +43,9 @@ namespace Basket.API
             // MassTransit-RabbitMQ configuration
             services.AddMassTransit(config =>
             {
-                config.UsingRabbitMq((ctx, cfg0) =>
+                config.UsingRabbitMq((ctx, cfg) =>
                 {
-                    cfg0.Host("amqp://guest:guest@localhost:15672");
+                    cfg.Host(Configuration["EventBusSettings:HostAddress"]);
                 });
             });
             services.AddMassTransitHostedService();
